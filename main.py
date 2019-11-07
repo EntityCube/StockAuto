@@ -39,7 +39,8 @@ def table_spawn_check():
         c.execute('''
                   CREATE TABLE mdata(symbol text, sellPrice real, quantityTraded, totalSellQuantity real, totalBuyQuantity real, open real, dayHigh real, dayLow real, change real, closePrice real, totalTradedValue, totalTradedVolume, varMargin)''')
 
-    # c.execute('DELETE FROM mdata')
+    else:
+        c.execute('DELETE FROM mdata')
 
 
 # get current list of all companies registered in nse
@@ -91,18 +92,19 @@ def thread_fetch(stock):
     processes = []
     process = Process(target=fetch, args=(stock,)) 
     processes.append(process)
+    print(processes)
     process.start()
-    time.sleep(0.2)
+    time.sleep(0.5)
 
     # fetch(stock)
 
 # collecting stocks using nse api
 def collect_stocks():
     global processes
-    global response
+    global respo
     global stock_codes
-    for stock in stock_codes: # iterate through all stock codes collected before
-    # for i in range(50): 
+    # for stock in stock_codes: # iterate through all stock codes collected before
+    for stock in range(5)jj: 
         if (nse.is_valid_code(stock)): # testing whether stock code is valid or not
             thread_fetch(stock)
     
@@ -147,14 +149,24 @@ def sql_section(value):
 
 
                  )"""
-              
-    c.execute(command)
+
+    for i in range(0,100):
+        try: 
+            c.execute(command)
+        except sqlite3.OperationalError as e:
+            print(f"----------------------- Fixing: {e} try:{i+1}/100")
+            continue
+        break
+
     conn.commit()
 
 
 
 if __name__ == '__main__':
+    start_time = time.time()
     table_spawn_check()
     get_stock_codes()
     collect_stocks()
+    end_time = time.time() - start_time
+    print(f"Took {end_time/60} to complete")
 
