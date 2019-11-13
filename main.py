@@ -104,7 +104,7 @@ def collect_stocks():
     global respo
     global stock_codes
     # for stock in stock_codes: # iterate through all stock codes collected before
-    for stock in range(5)jj: 
+    for stock in stock_codes: 
         if (nse.is_valid_code(stock)): # testing whether stock code is valid or not
             thread_fetch(stock)
     
